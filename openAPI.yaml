@@ -1,0 +1,239 @@
+openapi: 3.0.3
+info:
+  title: Users Service
+  description: |-
+    Users Service is an application to manage users identities :)
+    It allows to create, get, filter, update and delete users accounts.
+    
+    Some useful links:
+    - [The Users Service repository](https://training-git.lohika.com/cap-python-internship/python-internship-poland/users-service)
+  version: 1.0.11
+servers:
+  - url: https://127.0.0.1:8000/
+tags:
+  - name: Users
+    description: Users Service
+paths:
+  /v1/users:
+    get:
+      tags:
+        - Users
+      summary: Search and filter users
+      description: Search and filter users by id, nickname or email. Search parameters are mutually exclusive. If no query parameters indicated - returns all available users sorted by id.
+      parameters:
+        - name: ids
+          in: query
+          description: user identifiers
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: nickname
+          in: query
+          description: user nickname
+          schema:
+            type: string
+            example: b_psychedelic
+        - name: email
+          in: query
+          description: user email
+          schema:
+            type: string
+            example: will.be.psychedelic@gmail.com
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'          
+        '400':
+          description: Invalid Parameter Received
+        '404':
+          description: User Not Found
+        '405':
+          description: Method Not Allowed
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+    post:
+      tags:
+        - Users
+      summary: Add a new user
+      description: Add a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserWithoutId'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid Parameter Received
+        '405':
+          description: Method Not Allowed
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+  /v1/users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user info
+      description: Get user info by id
+      parameters:
+        - name: id
+          in: path
+          description: user identifier
+          required: true
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+        '400':
+          description: Invalid Parameter Received
+        '404':
+          description: User Not Found
+        '405':
+          description: Method Not Allowed
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+    put:
+      tags:
+        - Users
+      summary: Update user info
+      description: Update user info by id
+      parameters:
+        - name: id
+          in: path
+          description: user identifier
+          required: true
+          explode: true
+          schema:
+            type: integer
+            default: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserWithoutId'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User' 
+        '400':
+          description: Invalid Parameter Received
+        '404':
+          description: User Not Found
+        '405':
+          description: Method Not Allowed
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+    delete:
+      tags:
+        - Users
+      summary: Delete user
+      description: Delete user by id
+      parameters:
+        - name: id
+          in: path
+          description: user identifier
+          required: true
+          explode: true
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid Parameter Received
+        '404':
+          description: User Not Found
+        '405':
+          description: Method Not Allowed
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+components:
+  schemas:
+    Users:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    User:
+      description: User object
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        countryCode:
+          type: string
+          example: UA
+        dateOfBirth:
+          type: string
+          example: 24/08/1991
+        firstName:
+          type: string
+          example: James
+        lastName:
+          type: string
+          example: john@email.com
+        nickname:
+          type: string
+          example: b_psychedelic
+        gender:
+          type: string
+          example: male
+        email:
+          type: string
+          example: will.be.psychedelic@gmail.com
+    UserWithoutId:
+      description: User object
+      type: object
+      properties:
+        countryCode:
+          type: string
+          example: UA
+        dateOfBirth:
+          type: string
+          example: 24/08/1991
+        firstName:
+          type: string
+          example: James
+        lastName:
+          type: string
+          example: john@email.com
+        nickname:
+          type: string
+          example: b_psychedelic
+        gender:
+          type: string
+          example: male
+        email:
+          type: string
+          example: will.be.psychedelic@gmail.com
