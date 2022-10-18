@@ -1,0 +1,28 @@
+#!/usr/bin/python
+import sys
+import re
+
+
+branch_pattern = '(major|feature|bugfix|hotfix)/*'
+commit_pattern = '^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\(([\w\-.]+)\))?(!)?: ([\w ])+([\s\S]*)'
+# Read in each ref that the user is trying to update
+line = sys.stdin.read() 
+(branch, commit_msg, ref) = line.strip().split()
+if re.match(branch_pattern, branch):
+	revs = branch + "..." + commit_msg
+    	proc = subprocess.Popen(['git', 'rev-list','--oneline','--first-parent', revs], stdout=subprocess.PIPE)
+   	lines = proc.stdout.readlines()
+	if lines:
+		rev = str(lines[0])
+		if re.search(commit_pattern, rev):
+			print("[INFO] All commits and branch names follow conventional rules")
+			sys.exit(0)
+	else:
+		print("[ERROR] Wrong commits")
+		sys.exit(1)
+else:
+	print("[ERROR] Wrong branch name")
+	sys.exit(1)
+
+	
+

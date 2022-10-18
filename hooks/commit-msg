@@ -1,0 +1,14 @@
+#!/usr/bin/python
+import re
+import sys
+msg = sys.argv[1]
+pattern = '^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\(([\w\-.]+)\))?(!)?: ([\w ])+([\s\S]*)'
+
+with open(msg,'r') as f:
+	content = f.read()
+	if re.search(pattern, content):
+		print("properly commited changes")
+		sys.exit(0)
+	else:
+		print("Wrong commit topic, check whether commit follows this template: <topic>(optional_scope): commit msg description ")
+		sys.exit(1)

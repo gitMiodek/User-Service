@@ -1,0 +1,11 @@
+#!/usr/bin/python
+import time
+
+print("[INFO]")
+print("U will be thrown to a commitinng window")
+print("Begin commit message with one of the following topics:")
+
+print("build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test")
+print("Your commit message must follow this template: <topic>(optional_scope): <commit description>")
+
+time.sleep(5)

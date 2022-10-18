@@ -1,0 +1,25 @@
+#!/usr/bin/python
+import re
+import sys
+import subprocess
+
+pattern = '(major|feature|bugfix|hotfix)/*'
+
+
+
+bashCommand = "git rev-parse --abbrev-ref HEAD"
+process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+output, error = process.communicate()
+
+name = str(output.strip())
+
+branch_name = name.split("'")[1]
+if re.search(pattern, branch_name):
+	print("Valid branch name")
+	sys.exit(0)
+else:
+	print("Wrong branch name, Try convention:major|feature|bugfix|hotfix ")
+	sys.exit(1)
+
+
+
