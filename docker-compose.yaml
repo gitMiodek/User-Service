@@ -1,0 +1,67 @@
+version: "3.7"
+services:
+  Users:
+    image: api_image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    depends_on:
+      DB:
+        condition: service_healthy
+
+
+    restart: always
+    networks:
+      - network
+  tests:
+    image: api_image_test
+    build:
+      context: .
+      dockerfile: Dockerfile_tests
+    ports:
+      - "7000:120"
+    depends_on:
+      - Users
+
+    restart: "no"
+    networks:
+      - network
+  DB:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U postgres -d postgres'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - network
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - network
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+    restart: always
+    networks:
+      - network
+
+
+networks:
+     network:
+       driver: bridge
+       
